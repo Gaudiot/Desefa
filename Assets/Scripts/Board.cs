@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Board : MonoBehaviour
@@ -10,6 +8,8 @@ public class Board : MonoBehaviour
     private Tile[,] board;
     private int height;
     private int width;
+
+    private SpriteRenderer mapSprite;
     
     void Start()
     {
@@ -22,6 +22,55 @@ public class Board : MonoBehaviour
                 board[x,y] = new Tile(new Vector2Int(x,y));
 
         terrain = JSONMapReader.GetMapMatrix(jsonMapa);
+
+        mapSprite = gameObject.GetComponent<SpriteRenderer>();
+    }
+
+    void Update()
+    {
+        if(Input.GetMouseButtonDown(0)){
+            Vector2Int tileSelect = OnTileSelect();
+            Debug.Log(tileSelect);
+            if(tileSelect.x > 0 && tileSelect.y > 0){
+
+            }
+        }
+    }
+
+    private Vector2 GetMapDimensions(){
+        float scale = gameObject.transform.localScale.x;
+        Vector2 mapDimensions = mapSprite.size*scale;
+
+        return mapDimensions;
+    }
+
+    private Vector2 MousePositionOnBoard(){
+        //Get actual map size in unity scale
+        Vector2 mapDimensions = GetMapDimensions();
+
+        //Mouse position and correction factor
+        Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        mousePosition += (mapDimensions/2);
+        
+        return mousePosition;
+    }
+
+    private Vector2Int OnTileSelect(){
+        Vector2 mousePosition = MousePositionOnBoard();
+        Vector2 mapDimensions = GetMapDimensions();
+        
+        if(mousePosition.x < 0 || mousePosition.x > mapDimensions.x) return new Vector2Int(0, 0);
+        if(mousePosition.y < 0 || mousePosition.y > mapDimensions.y) return new Vector2Int(0, 0);
+        
+
+        float tile_width = mapDimensions.x/width;
+        float tile_height = mapDimensions.y/height;
+
+        Vector2Int selectedTile = new Vector2Int();
+        selectedTile.x = Mathf.FloorToInt(mousePosition.x/tile_width) + 1;
+        selectedTile.y = Mathf.FloorToInt(mousePosition.y/tile_height) + 1;
+
+        return selectedTile;
     }
 
     public Piece GetPiece(Vector2Int position)
