@@ -71,22 +71,44 @@ public class Board : MonoBehaviour
                         if (board[mousePosition.x, mousePosition.y].HasPiece())
                         {
                             GameObject otherPiece = board[mousePosition.x, mousePosition.y].GetPiece();
-                            if (selectedPiece.GetComponent<Piece>().GetTeam() == otherPiece.GetComponent<Piece>().GetTeam())
+                            Piece selectedPieceScript = selectedPiece.GetComponent<Piece>();
+                            Piece otherPieceScript = otherPiece.GetComponent<Piece>();
+                            if (selectedPieceScript.GetTeam() == otherPieceScript.GetTeam())
                             {
                                 Debug.Log("Ally");
+                                if(PieceMergePotara(selectedPiece,otherPiece)){
+                                    Vector2Int piecePosition = selectedPieceScript.GetPosition();
+                                    board[piecePosition.x, piecePosition.y].DestroyPiece();
+                                }
                             }
                             else
                             {
                                 Debug.Log("Enemy");
+                                var result = Time2Duel(selectedPieceScript,otherPieceScript);
+                                if(result == 0){
+                                    Debug.Log("draw");
+                                }
+                                else if(result == 1){
+                                    Vector2Int piecePosition = selectedPiece.GetComponent<Piece>().GetPosition();
+                                    board[mousePosition.x, mousePosition.y].DestroyPiece();
+                                    board[mousePosition.x, mousePosition.y].SetPiece(board[piecePosition.x, piecePosition.y].GetPiece());
+                                    board[mousePosition.x, mousePosition.y].GetPiece().GetComponent<Piece>().MoveTo(mousePosition);
+                                    board[piecePosition.x, piecePosition.y].ClearPiece();
+
+                                     //TO DO: transformar esse bloco em uma função
+                                }
+                                else{
+                                Vector2Int piecePosition = selectedPiece.GetComponent<Piece>().GetPosition();
+                                board[piecePosition.x, piecePosition.y].DestroyPiece();}
                             }
                         }
                         else
                         {
                             Vector2Int piecePosition = selectedPiece.GetComponent<Piece>().GetPosition();
                             board[mousePosition.x, mousePosition.y].SetPiece(board[piecePosition.x, piecePosition.y].GetPiece());
-                            board[mousePosition.x, mousePosition.y].GetPiece().GetComponent<Piece>().MoveTo(new Vector2Int(mousePosition.x, mousePosition.y));
+                            board[mousePosition.x, mousePosition.y].GetPiece().GetComponent<Piece>().MoveTo(mousePosition);
 
-                            board[piecePosition.x, piecePosition.y].ClearPiece();
+                            board[piecePosition.x, piecePosition.y].ClearPiece(); //TO DO: transformar esse bloco em uma função
                         }
 
                         GameManager.Instance.SwitchTurn();
@@ -160,6 +182,8 @@ public class Board : MonoBehaviour
             selectedPiece = null;
         }
 
+        if(selectedPiece == null) return;
+
         AvailableMoves = selectedPiece.GetComponent<Piece>().GetAvailableMoves(this);
 
         for (int i = 0; i < AvailableMoves.Count; i++)
@@ -178,5 +202,28 @@ public class Board : MonoBehaviour
 
         AvailableMoves.Clear();
         selectedPiece = null;
+    }
+
+    public int Time2Duel(Piece onePiece, Piece twoPiece){  // Função de inicio de combate
+        twoPiece.IsAttackedBy(onePiece);
+        if(twoPiece.IsAlive()){
+            onePiece.IsAttackedBy(twoPiece);
+            if(onePiece.IsAlive()){
+                return 0;
+            }
+            else
+            return -1;
+        }
+        else
+        return 1;
+    }
+
+    public bool PieceMergePotara(GameObject onePiece, GameObject twoPiece){  //função para junção de peças
+       if(onePiece.GetComponent<Piece>().GetPieceType() == twoPiece.GetComponent<Piece>().GetPieceType()){
+        twoPiece.GetComponent<Piece>().MergePiece(onePiece.GetComponent<Piece>().GetCurrHP());
+        return true;   
+       }
+       else
+       return false;
     }
 }
