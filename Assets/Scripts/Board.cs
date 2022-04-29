@@ -68,6 +68,8 @@ public class Board : MonoBehaviour
                 {
                     if (IsInAvailableMoves(mousePosition))
                     {
+                        SoundManager.instance.Stop();
+                        
                         if (board[mousePosition.x, mousePosition.y].HasPiece())
                         {
                             GameObject otherPiece = board[mousePosition.x, mousePosition.y].GetPiece();
@@ -94,12 +96,14 @@ public class Board : MonoBehaviour
                                     board[mousePosition.x, mousePosition.y].SetPiece(board[piecePosition.x, piecePosition.y].GetPiece());
                                     board[mousePosition.x, mousePosition.y].GetPiece().GetComponent<Piece>().MoveTo(mousePosition);
                                     board[piecePosition.x, piecePosition.y].ClearPiece();
+                                    
+                                    SoundManager.instance.PlayDeath();
+                                }else{
+                                    Vector2Int piecePosition = selectedPiece.GetComponent<Piece>().GetPosition();
+                                    board[piecePosition.x, piecePosition.y].DestroyPiece();
 
-                                     //TO DO: transformar esse bloco em uma função
+                                    SoundManager.instance.PlayDeath();
                                 }
-                                else{
-                                Vector2Int piecePosition = selectedPiece.GetComponent<Piece>().GetPosition();
-                                board[piecePosition.x, piecePosition.y].DestroyPiece();}
                             }
                         }
                         else
@@ -183,6 +187,8 @@ public class Board : MonoBehaviour
         }
 
         if(selectedPiece == null) return;
+
+        SoundManager.instance.PlayPiece(selectedPiece);
 
         AvailableMoves = selectedPiece.GetComponent<Piece>().GetAvailableMoves(this);
 
