@@ -68,6 +68,8 @@ public class Board : MonoBehaviour
                 {
                     if (IsInAvailableMoves(mousePosition))
                     {
+                        SoundManager.instance.Stop();
+                        
                         if (board[mousePosition.x, mousePosition.y].HasPiece())
                         {
                             GameObject otherPiece = board[mousePosition.x, mousePosition.y].GetPiece();

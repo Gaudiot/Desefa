@@ -23,13 +23,18 @@ public class SoundManager : MonoBehaviour
     }
 
     // void Start(){
-    //     backgroundSource.Play(background);
+    //     backgroundSource.Play();
     // }
+
+    public void Stop(){
+        audioSource.Stop();
+    }
 
     public void PlayPiece(GameObject piece){
         Piece.PieceType pieceType = piece.GetComponent<Piece>().GetPieceType();
         Debug.Log(pieceType);
 
+        Stop();
         switch (pieceType){
             case Piece.PieceType.pawn:
                 audioSource.PlayOneShot(pawn);
@@ -54,7 +59,7 @@ public class SoundManager : MonoBehaviour
     }
 
     public void PlayDeath(){
-        audioSource.Stop();
+        Stop();
         audioSource.PlayOneShot(death);
     }
 }
