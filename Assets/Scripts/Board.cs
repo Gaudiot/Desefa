@@ -178,8 +178,7 @@ public class Board : MonoBehaviour
         AvailableMoves = selectedPiece.GetComponent<Piece>().GetAvailableMoves(this);
 
         for (int i = 0; i < AvailableMoves.Count; i++){
-            GameObject highlight = Instantiate(highlightTile, new Vector3(AvailableMoves[i].x - 0.5f, AvailableMoves[i].y - 0.5f, 0), Quaternion.identity);
-            board[AvailableMoves[i].x, AvailableMoves[i].y].ActivateHighlight(highlight);
+            board[AvailableMoves[i].x, AvailableMoves[i].y].ActivateHighlight(highlightTile);
         }
     }
 

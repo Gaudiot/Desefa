@@ -55,7 +55,7 @@ public class Tile : MonoBehaviour
 
     public void ActivateHighlight(GameObject highlight)
     {
-        highlighTile = highlight;
+        highlighTile = Instantiate(highlight, new Vector3(position.x - 0.5f, position.y - 0.5f, 0), Quaternion.identity);
     }
 
     public void DeactivateHighlight()
