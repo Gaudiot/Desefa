@@ -11,10 +11,12 @@ public class Board : MonoBehaviour
     private int width;
 
     public GameObject white_rook, black_rook;
-    public GameObject highlightTile;
 
     private GameObject selectedPiece;
 
+    //TILE prefabs
+    public GameObject highlightTile;
+    public GameObject healthUI, attackUI;
 
     void Start()
     {
@@ -54,43 +56,30 @@ public class Board : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
-        {
+        if (Input.GetMouseButtonDown(0)){
             Vector2Int mousePosition = MousePositionOnBoard();
 
-            if (mousePosition.x > 0)
-            {
-                if (selectedPiece == null)
-                {
+            if (mousePosition.x > 0){
+                if (selectedPiece == null){
                     SelectPiece(mousePosition);
-                }
-                else
-                {
-                    if (IsInAvailableMoves(mousePosition))
-                    {
+                }else{
+                    if (IsInAvailableMoves(mousePosition)){
                         SoundManager.instance.Stop();
                         
-                        if (board[mousePosition.x, mousePosition.y].HasPiece())
-                        {
+                        if (board[mousePosition.x, mousePosition.y].HasPiece()){
                             GameObject otherPiece = board[mousePosition.x, mousePosition.y].GetPiece();
+
                             Piece selectedPieceScript = selectedPiece.GetComponent<Piece>();
                             Piece otherPieceScript = otherPiece.GetComponent<Piece>();
-                            if (selectedPieceScript.GetTeam() == otherPieceScript.GetTeam())
-                            {
-                                Debug.Log("Ally");
+
+                            if (selectedPieceScript.GetTeam() == otherPieceScript.GetTeam()){
                                 if(PieceMergePotara(selectedPiece,otherPiece)){
                                     Vector2Int piecePosition = selectedPieceScript.GetPosition();
                                     board[piecePosition.x, piecePosition.y].DestroyPiece();
                                 }
-                            }
-                            else
-                            {
-                                Debug.Log("Enemy");
+                            }else{
                                 var result = Time2Duel(selectedPieceScript,otherPieceScript);
-                                if(result == 0){
-                                    Debug.Log("draw");
-                                }
-                                else if(result == 1){
+                                if(result == 1){
                                     Vector2Int piecePosition = selectedPiece.GetComponent<Piece>().GetPosition();
                                     board[mousePosition.x, mousePosition.y].DestroyPiece();
                                     board[mousePosition.x, mousePosition.y].SetPiece(board[piecePosition.x, piecePosition.y].GetPiece());
@@ -98,16 +87,14 @@ public class Board : MonoBehaviour
                                     board[piecePosition.x, piecePosition.y].ClearPiece();
                                     
                                     SoundManager.instance.PlayDeath();
-                                }else{
+                                }else if(result == -1){
                                     Vector2Int piecePosition = selectedPiece.GetComponent<Piece>().GetPosition();
                                     board[piecePosition.x, piecePosition.y].DestroyPiece();
 
                                     SoundManager.instance.PlayDeath();
                                 }
                             }
-                        }
-                        else
-                        {
+                        }else{
                             Vector2Int piecePosition = selectedPiece.GetComponent<Piece>().GetPosition();
                             board[mousePosition.x, mousePosition.y].SetPiece(board[piecePosition.x, piecePosition.y].GetPiece());
                             board[mousePosition.x, mousePosition.y].GetPiece().GetComponent<Piece>().MoveTo(mousePosition);
@@ -121,10 +108,9 @@ public class Board : MonoBehaviour
                     UnselectPiece();
                 }
             }
-        }
-        else if (Input.GetKeyDown(KeyCode.Escape))
-        {
+        }else if (Input.GetKeyDown(KeyCode.Escape)){
             UnselectPiece();
+            SoundManager.instance.Stop();
         }
     }
 
@@ -181,8 +167,7 @@ public class Board : MonoBehaviour
     {
         selectedPiece = board[mousePosition.x, mousePosition.y].GetPiece();
 
-        if (selectedPiece != null && selectedPiece.GetComponent<Piece>().GetTeam() != GameManager.Instance.GetTurnPlayer())
-        {
+        if (selectedPiece != null && selectedPiece.GetComponent<Piece>().GetTeam() != GameManager.Instance.GetTurnPlayer()){
             selectedPiece = null;
         }
 
@@ -192,8 +177,7 @@ public class Board : MonoBehaviour
 
         AvailableMoves = selectedPiece.GetComponent<Piece>().GetAvailableMoves(this);
 
-        for (int i = 0; i < AvailableMoves.Count; i++)
-        {
+        for (int i = 0; i < AvailableMoves.Count; i++){
             GameObject highlight = Instantiate(highlightTile, new Vector3(AvailableMoves[i].x - 0.5f, AvailableMoves[i].y - 0.5f, 0), Quaternion.identity);
             board[AvailableMoves[i].x, AvailableMoves[i].y].ActivateHighlight(highlight);
         }
@@ -201,8 +185,7 @@ public class Board : MonoBehaviour
 
     private void UnselectPiece()
     {
-        for (int i = 0; i < AvailableMoves.Count; i++)
-        {
+        for (int i = 0; i < AvailableMoves.Count; i++){
             board[AvailableMoves[i].x, AvailableMoves[i].y].DeactivateHighlight();
         }
 
@@ -210,26 +193,28 @@ public class Board : MonoBehaviour
         selectedPiece = null;
     }
 
-    public int Time2Duel(Piece onePiece, Piece twoPiece){  // Função de inicio de combate
-        twoPiece.IsAttackedBy(onePiece);
-        if(twoPiece.IsAlive()){
-            onePiece.IsAttackedBy(twoPiece);
-            if(onePiece.IsAlive()){
+    // Função de inicio de combate
+    private int Time2Duel(Piece pieceOne, Piece pieceTwo){
+        pieceTwo.IsAttackedBy(pieceOne);
+        if(pieceTwo.IsAlive()){
+            pieceOne.IsAttackedBy(pieceTwo);
+            if(pieceOne.IsAlive()){
                 return 0;
             }
-            else
             return -1;
         }
-        else
         return 1;
     }
 
-    public bool PieceMergePotara(GameObject onePiece, GameObject twoPiece){  //função para junção de peças
-       if(onePiece.GetComponent<Piece>().GetPieceType() == twoPiece.GetComponent<Piece>().GetPieceType()){
-        twoPiece.GetComponent<Piece>().MergePiece(onePiece.GetComponent<Piece>().GetCurrHP());
-        return true;   
-       }
-       else
-       return false;
+    // Função para junção de peças
+    private bool PieceMergePotara(GameObject pieceOne, GameObject pieceTwo){
+        Piece pieceOneScript = pieceOne.GetComponent<Piece>();
+        Piece pieceTwoScript = pieceTwo.GetComponent<Piece>();
+
+        if(pieceOneScript.GetPieceType() == pieceTwoScript.GetPieceType()){
+            pieceTwoScript.MergePiece(pieceOneScript.GetCurrHP());
+            return true;
+        }
+        return false;
     }
 }
