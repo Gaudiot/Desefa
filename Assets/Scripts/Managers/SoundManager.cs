@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class SoundManager : MonoBehaviour
 {
-    public AudioSource audioSource, backgroundSource;
+    private AudioSource audioSource, backgroundSource;
     public AudioClip background;
     public AudioClip death;
     public AudioClip king;
@@ -22,9 +22,10 @@ public class SoundManager : MonoBehaviour
         instance = this;
     }
 
-    // void Start(){
-    //     backgroundSource.Play();
-    // }
+    void Start(){
+        audioSource = GameObject.Find("AudioSource").GetComponent<AudioSource>();
+        backgroundSource = GameObject.Find("BackgroundSource").GetComponent<AudioSource>();
+    }
 
     public void Stop(){
         audioSource.Stop();

@@ -739,6 +739,7 @@ GameObject:
   m_Component:
   - component: {fileID: 729697536}
   - component: {fileID: 729697535}
+  - component: {fileID: 729697537}
   m_Layer: 0
   m_Name: SoundManager
   m_TagString: Untagged
@@ -785,6 +786,26 @@ Transform:
   m_Father: {fileID: 1759990811}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &729697537
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 729697534}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c02643965cf432498db5dc427a6fd3f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  background: {fileID: 0}
+  death: {fileID: 8300000, guid: 7d5445b2d668ac24289db8a6ba876669, type: 3}
+  king: {fileID: 8300000, guid: bb52d46b6167f554eae08701c897082d, type: 3}
+  queen: {fileID: 8300000, guid: 261d1b67d608d634a89a716ab9763cae, type: 3}
+  pawn: {fileID: 8300000, guid: 16d4a9b589470b3469a0f2b552e647e1, type: 3}
+  knight: {fileID: 8300000, guid: 592552bd109cdd54a991b59e1c7c0269, type: 3}
+  bishop: {fileID: 8300000, guid: 01e58528436117d46ac759b560301c3b, type: 3}
+  rook: {fileID: 8300000, guid: 82daab98b5060484b9a65b9a49460cad, type: 3}
 --- !u!1 &750779856
 GameObject:
   m_ObjectHideFlags: 0
@@ -1000,7 +1021,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 861567716}
-  - component: {fileID: 861567715}
+  - component: {fileID: 861567717}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: GameController
@@ -1008,18 +1029,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &861567715
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 861567714}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ddd2ec07b37651947be7051e53983aec, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &861567716
 Transform:
   m_ObjectHideFlags: 0
@@ -1035,6 +1044,18 @@ Transform:
   m_Father: {fileID: 1759990811}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &861567717
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 861567714}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2874454f9221fe043860bc520c845566, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &935340071
 GameObject:
   m_ObjectHideFlags: 0
