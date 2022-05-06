@@ -33,7 +33,6 @@ public class SoundManager : MonoBehaviour
 
     public void PlayPiece(GameObject piece){
         Piece.PieceType pieceType = piece.GetComponent<Piece>().GetPieceType();
-        Debug.Log(pieceType);
 
         Stop();
         switch (pieceType){

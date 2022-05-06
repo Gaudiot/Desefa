@@ -19,10 +19,14 @@ public class Board : MonoBehaviour
 
     //TILE prefabs
     public GameObject highlightTile;
-    public string pieceMaxHP, pieceCurrHP, pieceAtk;
+
+    //Managers
+    private HudManager hudManager;
 
     void Start()
     {
+        hudManager = GameObject.Find("HudManager").GetComponent<HudManager>();
+
         this.height = JSONMapReader.GetMapHeight(jsonMapa);
         this.width = JSONMapReader.GetMapWidth(jsonMapa);
         this.board = new Tile[this.width + 1, this.height + 1];
@@ -232,22 +236,13 @@ public class Board : MonoBehaviour
         Piece pieceTwoScript = pieceTwo.GetComponent<Piece>();
 
         if(pieceOneScript.GetPieceType() == pieceTwoScript.GetPieceType()){
-            pieceTwoScript.MergePiece(pieceOneScript.GetCurrHP());
+            pieceTwoScript.MergePiece(pieceOneScript);
             return true;
         }
         return false;
     }
 
     private void SetStatus(Vector2Int mousePosition){
-        if (mousePosition == new Vector2Int() || !board[mousePosition.x, mousePosition.y].HasPiece()){
-            pieceMaxHP = "-";
-            pieceCurrHP = "-";
-            pieceAtk = "-";
-        } else if (board[mousePosition.x, mousePosition.y].HasPiece()){
-            GameObject piece = board[mousePosition.x, mousePosition.y].GetPiece();
-            pieceMaxHP = piece.GetComponent<Piece>().GetMaxHP().ToString();
-            pieceCurrHP = piece.GetComponent<Piece>().GetCurrHP().ToString();
-            pieceAtk = piece.GetComponent<Piece>().GetAP().ToString();
-        }
+        hudManager.UpdatePieceStatus(board[mousePosition.x, mousePosition.y].GetPiece());
     }
 }
